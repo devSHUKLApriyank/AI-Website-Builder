@@ -3,7 +3,7 @@ import React from 'react'
 const AuthPage = () => {
   return (
     <div>
-      Au6th
+      Auth
     </div>
   )
 }
