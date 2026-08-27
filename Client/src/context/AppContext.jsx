@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect , useState} from "react";
 import api from "../api/api";
 
-
-
 export const AppContext = createContext(undefined)
 
 export function AppContextProvider({children}){
@@ -10,6 +8,8 @@ export function AppContextProvider({children}){
     //Auth State
     const [user, setUser]= useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
+
+    
 
     //Auth actions
     const checkSession = async ()=>{
@@ -32,7 +32,7 @@ export function AppContextProvider({children}){
             user,
             loadingUser,
         }}>
-
+ {children}
         </AppContext.Provider>
     )
 }
