@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect , useState} from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import api from "../api/api";
 
 export const AppContext = createContext(undefined)
@@ -6,22 +6,20 @@ export const AppContext = createContext(undefined)
 export function AppContextProvider({children}){
 
     //Auth State
-    const [user, setUser]= useState(null);
+    const [user, setUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
 
-    
-
     //Auth actions
-    const checkSession = async ()=>{
+    const checkSession = useCallback(async ()=>{
         try{
             const {data} = await api.get("/api/auth/me");
-            //setUser(data.user)
+            setUser(data.user)
         }catch(error){
             setUser(null)
         }finally{
             setLoadingUser(false)
         }
-    }
+    },[])
 
     useEffect(()=>{
         checkSession()
@@ -32,7 +30,7 @@ export function AppContextProvider({children}){
             user,
             loadingUser,
         }}>
- {children}
+            {children}
         </AppContext.Provider>
     )
 }
@@ -40,7 +38,7 @@ export function AppContextProvider({children}){
 export function useAppContext(){
     const context = useContext(AppContext);
     if(context === undefined){
-        throw new Error("useAppContext must be use within an AppContextProvider")
+        throw new Error("useAppContext must be used within an AppContextProvider")
     }
     return context;
 }
