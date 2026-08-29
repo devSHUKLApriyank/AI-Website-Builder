@@ -29,6 +29,7 @@ export function AppContextProvider({children}){
         <AppContext.Provider value={{
             user,
             loadingUser,
+            checkSession
         }}>
             {children}
         </AppContext.Provider>
