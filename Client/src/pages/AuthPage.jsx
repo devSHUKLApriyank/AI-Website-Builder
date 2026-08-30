@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import LoginLeft from '../components/LoginLeft'
-import { Link } from 'react-router-dom'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { EyeIcon, EyeOffIcon, Loader2Icon } from 'lucide-react'
 import { useAppContext } from '../context/AppContext'
 
 const AuthPage = ({ mode }) => {
   
-  const {login, resgister} = useAppContext()
+  const {login, register} = useAppContext()
+  const navigate = useNavigate()
 
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -28,10 +29,13 @@ const AuthPage = ({ mode }) => {
     if(mode === "login"){
       await login(email, password)
     }else{
-      await resgister(name, email, password)
+      await register(name, email, password)
     }
+    navigate("/")
   } catch (error) {
-    
+    setError(error.message || (mode === "login" ? "Login failed" : "Registration failed"))
+  }finally{
+    setLoading(false)
   }
 
   }
@@ -54,7 +58,7 @@ const AuthPage = ({ mode }) => {
 
           {error && <div className='mb-6 p-3 border border-blue-200 bg-blue-50 text-blue-700 text-xs rounded'>{error}</div>}
 
-          <form className='space-y-6'>
+          <form className='space-y-6' onSubmit={handleSubmit}>
             {!isLogin && (
               <div>
                 <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mb-2">
