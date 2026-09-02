@@ -82,13 +82,123 @@ export function AppContextProvider({ children }) {
         }
     }
 
+    //Projects actions
+    const loadProjects = async () => {
+        if(!user) return;
+        try {
+            const {data} = await api.get("/api/projects")
+            setProjects(data)
+        } catch (err) {
+            console.error("Failed to list projects:", err)
+            toast.error("Failed to load projects list")
+        }finally{
+            setLoadingProjects(false);
+        }
+    }
+
+    const loadProject = async (id , silent = false)=>{
+        if(!user) return;
+        if(!silent) setLoadingActiveProjects(true)
+            try {
+                const {data} = await api.get(`/api/projects/${id}`)
+                setActiveProjects(data)
+
+                //Default file selection
+                const files = Object.keys(data.files)
+                if(files.length > 0){
+                    setActiveFile((prev)=>{
+                        if(files.includes()) return prev;
+                        if(files.includes("/App.js")) return "/App.js";
+                        return files[0]
+                    })
+                }
+            } catch (err) {
+                console.error("Failed to load project:", err);
+                if(!silent){
+                    toast.error("Failed to load project details")
+                    navigate('/')
+                }
+            }finally{
+                if(!silent) setLoadingActiveProjects(false)
+            }
+    }
+
+    // Automatically call active project status if generating ot pending
+    useEffect(()=>{
+        if(!activeProjects?._id || !user) return;
+
+        const isOngoing = activeProjects.status === "generating" || activeProjects.status === "pending" || activeProjects.status === "revising";
+
+        if(isOngoing){
+            setChatLoading(true);
+            const interval = setInterval(()=>{
+                loadProject(activeProjects._id, true)
+            },2000);
+            return ()=> clearInterval(interval)
+        }else{
+            setChatLoading(false);
+        }
+
+    },[activeProjects?._id, activeProjects?.status, loadingProjects, user])
+
+    const handleGenerate = useCallback(
+        async (prompt)=>{
+            if(!user) return;
+            setGeneratingProjects(true);
+            try {
+                const {data} = await api.post("/api/projects", {prompt})
+                toast.success("AI Agent is planning structure...")
+                navigate(`/builder/${data._id}`);
+            } catch (error) {
+                console.error("Failed to generate project:", error);
+                const errMsg = error?.response?.data?.error || "Failed to generate project";
+                toast.error(errMsg);
+                throw new Error(errMsg);
+            } finally {
+                setGeneratingProjects(false);
+            }
+        },[navigate, user]  
+    )
+
+
+    const handleDelete = useCallback(
+        async (id)=>{
+            if(!user) return;
+           
+            try {
+                await api.delete(`/api/projects/${id}`) 
+                setProjects((prev)=> prev.filter((p)=> p._id !== id))
+                toast.success("Project deleted successfully")
+               
+            } catch (error) {
+                console.error("Failed to delete project:", error);
+                toast.error("Failed to delete project");
+            }
+        },[user]  
+    )
+
     return (
         <AppContext.Provider value={{
             user,
             loadingUser,
             login,
             register,
-            checkSession
+            checkSession,
+            projects,
+            loadingProjects,
+            loadProjects,
+            activeProjects,
+            generatingProjects,
+            loadingActiveProjects,
+            chatLoading,
+            activeFile,
+            showCode,
+            setShowCode,
+            setActiveFile,
+            handleGenerate,
+            handleDelete,
+            loadProject,
+            logout
         }}>
             {children}
         </AppContext.Provider>
