@@ -7,7 +7,11 @@ const PromptInput = ({ onSubmit, loading = false, placeholder = "Describe the we
   const [value, setValue] = useState("")
   const textareaRef = useRef(null)
 
-  useEffect(()=>{},[autofocus])
+  useEffect(()=>{
+    if(autofocus && textareaRef.current){
+      textareaRef.current.focus();
+    }
+  },[autofocus])
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault()
