@@ -16,7 +16,7 @@ const HomePage = () => {
         </div>
         <div className='flex items-center gap-4 text-sm font-medium text-zinc-300'>
           <span>{user?.name}</span>
-          <button className='py-1.5 px-3 border border-white/20 text hover:bg-white/10 text-xs rounded-md cursor-pointer bg-transparent'>Sign out</button>
+          <button onClick={logout} className='py-1.5 px-3 border border-white/20 text hover:bg-white/10 text-xs rounded-md cursor-pointer bg-transparent'>Sign out</button>
         </div>
       </nav>
 
@@ -41,12 +41,14 @@ const HomePage = () => {
           {/*Prompt input with glassmorphic variant */}
           <div className='w-full mt-6'>
             <PromptInput
-            onSubmit={()=>{}}
-            loading={false}
+            onSubmit={handleGenerate}
+            loading={generatingProject}
             placeholder='Create a portfolio website...' 
             variant='glass'
             autofocus/>
           </div>
+
+          
         </div>
       </div>
     </div>
