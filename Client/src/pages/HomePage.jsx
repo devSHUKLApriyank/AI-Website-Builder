@@ -1,10 +1,11 @@
 import React from 'react'
 import { useAppContext } from '../context/AppContext'
 import PromptInput from '../components/PromptInput'
+import { homeTags } from '../assets/assets'
 
 const HomePage = () => {
 
-  const {user, projects , loadingProjects, generatingProject, loadProjects, handleGenerate, handleDelete, logout} = useAppContext()
+  const { user, projects, loadingProjects, generatingProject, loadProjects, handleGenerate, handleDelete, logout } = useAppContext()
 
   return (
     <div className="h-screen overflow-y-scroll text-white font-sans bg-[url('/bg-img.png')] bg-cover bg-center bg-no-repeat">
@@ -21,7 +22,7 @@ const HomePage = () => {
       </nav>
 
       {/*Hero Section */}
-      <div className= "flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-8 xl:mt-28">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-20 mt-8 xl:mt-28">
         <div className="w-full max-w-2xl flex flex-col items-center">
           {/*Promo Badge*/}
           <div className='flex items-center gap-2 p-1.5 pr-3 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[13px] text-white/90'>
@@ -37,18 +38,26 @@ const HomePage = () => {
           <p className='text-center text-sm md:text-base max-w-xl mt-4 text-white/65 leading-relaxed'>
             Describe your ideas and watch AI design, structure and launch your website instantly. No coding required.
           </p>
-          
+
           {/*Prompt input with glassmorphic variant */}
           <div className='w-full mt-6'>
             <PromptInput
-            onSubmit={handleGenerate}
-            loading={generatingProject}
-            placeholder='Create a portfolio website...' 
-            variant='glass'
-            autofocus/>
+              onSubmit={handleGenerate}
+              loading={generatingProject}
+              placeholder='Create a portfolio website...'
+              variant='glass'
+              autofocus />
           </div>
+          {/*Scrolling Marquee */}
+          <div className="marked-marquee w-full mt-4 max-w-2xl overflow-hidden py-1">
+            <div className='animate-marquee gap-3'>
+              {homeTags.map((tag,i)=>{
+                <button>
 
-          
+                </button>
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </div>
