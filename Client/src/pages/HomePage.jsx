@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useAppContext } from '../context/AppContext'
 import PromptInput from '../components/PromptInput'
 import { homeTags } from '../assets/assets'
 
 const HomePage = () => {
 
-  const { user, projects, loadingProjects, generatingProject, loadProjects, handleGenerate, handleDelete, logout } = useAppContext()
+  const { user, projects, loadingProjects, generatingProjects, loadProjects, handleGenerate, handleDelete, logout } = useAppContext()
+
+  useEffect(() =>{
+    loadProjects()
+  },[loadProjects])
 
   return (
     <div className="h-screen overflow-y-scroll text-white font-sans bg-[url('/bg-img.png')] bg-cover bg-center bg-no-repeat">
@@ -43,21 +47,42 @@ const HomePage = () => {
           <div className='w-full mt-6'>
             <PromptInput
               onSubmit={handleGenerate}
-              loading={generatingProject}
+              loading={generatingProjects}
               placeholder='Create a portfolio website...'
               variant='glass'
               autofocus />
           </div>
           {/*Scrolling Marquee */}
-          <div className="marked-marquee w-full mt-4 max-w-2xl overflow-hidden py-1">
-            <div className='animate-marquee gap-3'>
-              {homeTags.map((tag,i)=>{
-                <button>
-
-                </button>
+          <div className="marked-marquee w-full mt-4 max-w-2xl overflow-hidden py-1 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+            <div className='animate-marquee gap-3 flex w-max'>
+              {[...homeTags, ...homeTags].map((tag, i) => {
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleGenerate(tag)}
+                    disabled={generatingProjects}
+                    className="px-4 py-1.5 border rounded-full text-sm border-white/25 hover:bg-white/20 transition cursor-pointer shrink-0 font-medium whitespace-nowrap"
+                  >
+                    {tag}
+                  </button>
+                )
               })}
             </div>
           </div>
+
+
+          {/*All Projects */}
+          {!loadingProjects && projects.length > 0 && (
+            <div className='mt-12 w-full'>
+              <div className='flex items-center justify-between pb-3 mb-3 border-b border-white/10'>
+              <p className='text-xs font-medium uppercase text-zinc-100 tracking-widest'>All Projects</p>
+              <span className='text-xs text-zinc-100 font-normal'>
+                {projects.length}{projects.length === 1 ? "project" : "projects"}
+              </span>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </div>
