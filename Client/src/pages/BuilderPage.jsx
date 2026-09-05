@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../context/AppContext'
 import { useNavigate, useParams } from 'react-router-dom';
+import BuilderHeader from '../components/BuilderHeader';
 
 const BuilderPage = () => {
 
@@ -26,6 +27,11 @@ const BuilderPage = () => {
     }
  },[id, loadProject , activeProject])
 
+ const handleOpenPreview = () =>{
+  if(!id) return;
+  window.open(`/preview/${id}`,"_blank")
+ }
+
  if(loadingActiveProject || !activeProject){
   return <Loading />
  }
@@ -33,7 +39,13 @@ const BuilderPage = () => {
   return (
     <div className='h-screen flex flex-col bg-white overflow-hiddden text-zinc-900 relative'>
       {/*Top Bar Header */}
-
+        <BuilderHeader /> 
+        projectName ={activeProject.name}
+        version = {activeProject.version}
+        showCode = {showCode}
+        publishing = {publishing}
+        onToggleShowCode = {()=> setShowCode(!showCode)}
+        onOpenPreview = {handleOpenPreview}
       {/*Main Layout */}
     </div>
   )
