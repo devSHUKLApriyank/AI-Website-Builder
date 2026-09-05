@@ -31,7 +31,11 @@ const BuilderPage = () => {
  }
 
   return (
-    <div>BuilderPage</div>
+    <div className='h-screen flex flex-col bg-white overflow-hiddden text-zinc-900 relative'>
+      {/*Top Bar Header */}
+
+      {/*Main Layout */}
+    </div>
   )
 }
 
