@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import BuilderHeader from '../components/BuilderHeader';
 import Loading from '../components/Loading';
 import { FolderTreeIcon, MessageSquareIcon } from 'lucide-react';
+import ChatPanel from '../components/ChatPanel';
 
 const BuilderPage = () => {
 
@@ -14,6 +15,9 @@ const BuilderPage = () => {
   const [publishUrl, setPublishUrl] = useState(null);
 
  const {activeProjects, loadingActiveProjects, activeFile , showCode, setActiveFile, setShowCode, loadProject, logout} = useAppContext();
+
+ const handleChat =()=>{}
+ const [chatLoading , setChatLoading] = useState("false")
 
  useEffect(()=>{
     if(!id) return;
@@ -81,7 +85,7 @@ const BuilderPage = () => {
           <div className='flex-1 overflow-hidden'>
             {
               leftTab === 'chat' ? (
-                <div>Chat panel</div>
+               <ChatPanel messages={activeProjects.messages} onSend={handleChat} loading={chatLoading}/>
               ):(<div>File Explorer</div>)
             }
 
