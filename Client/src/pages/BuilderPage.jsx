@@ -14,10 +14,7 @@ const BuilderPage = () => {
   const [publishing, setPublishing] = useState(false);
   const [publishUrl, setPublishUrl] = useState(null);
 
- const {activeProjects, loadingActiveProjects, activeFile , showCode, setActiveFile, setShowCode, loadProject, logout} = useAppContext();
-
- const handleChat =()=>{}
- const [chatLoading , setChatLoading] = useState("false")
+ const {activeProjects, loadingActiveProjects, activeFile , showCode, setActiveFile, setShowCode, loadProject, logout, chatLoading} = useAppContext();
 
  useEffect(()=>{
     if(!id) return;

@@ -177,6 +177,8 @@ export function AppContextProvider({ children }) {
         },[user]  
     )
 
+    const handleChat = useCallback()
+
     return (
         <AppContext.Provider value={{
             user,
