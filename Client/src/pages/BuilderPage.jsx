@@ -5,6 +5,7 @@ import BuilderHeader from '../components/BuilderHeader';
 import Loading from '../components/Loading';
 import { FolderTreeIcon, MessageSquareIcon } from 'lucide-react';
 import ChatPanel from '../components/ChatPanel';
+import FileExplorer from '../components/FileExplorer';
 
 const BuilderPage = () => {
 
@@ -83,7 +84,11 @@ const BuilderPage = () => {
             {
               leftTab === 'chat' ? (
                <ChatPanel messages={activeProjects.messages} onSend={handleChat} loading={chatLoading}/>
-              ):(<div>File Explorer</div>)
+              ):(
+                <FileExplorer files={activeProjects.files} activeFile={activeFile} onFileSelect={(path)=>{setActiveFile(path);
+                  setShowCode(true)
+                }}/>
+              )
             }
 
           </div>
