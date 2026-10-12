@@ -180,10 +180,10 @@ export function AppContextProvider({ children }) {
     const handleChat = useCallback(
         async (prompt)=>{
             if(!activeProjects || !user) return;
-            setChatLaoding(true);
+            setChatLoading(true);
             try{
                 const {data} = await api.post(`/api/projects/${activeProject._id}/chat`,{prompt});
-                setActiveProject(data)
+                setActiveProjects(data)
                 if(data.errors && data.errors.length > 0){
                     toast.error(`${data.errors.length} revision patch(es) failed`)
                 }else{
