@@ -179,7 +179,7 @@ export function AppContextProvider({ children }) {
 
     const handleChat = useCallback(
         async (prompt)=>{
-            if(!activeProject || !user) return;
+            if(!activeProjects || !user) return;
             setChatLaoding(true);
             try{
                 const {data} = await api.post(`/api/projects/${activeProject._id}/chat`,{prompt});
