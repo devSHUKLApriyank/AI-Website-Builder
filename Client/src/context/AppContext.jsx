@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from "rea
 import api from "../api/api";
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom";
+import debounce from "lodash.debounce";
 
 export const AppContext = createContext(undefined)
 
@@ -195,6 +196,16 @@ export function AppContextProvider({ children }) {
             }finally{
                 setChatLoading(false);
             }
+        },[activeProjects, user]
+    )
+
+    const debouncedSave = React.useMemo(()=>debounce(async (params)=>{
+        
+    }))
+
+    const updateProjectFiles = useCallback(
+        async (params)=>{
+
         },[activeProjects, user]
     )
 
