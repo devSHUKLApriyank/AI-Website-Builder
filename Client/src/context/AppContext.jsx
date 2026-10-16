@@ -200,13 +200,27 @@ export function AppContextProvider({ children }) {
     )
 
     const debouncedSave = React.useMemo(()=>debounce(async (params)=>{
-        
-    }))
+        try {
+            await api.put(`/api/projects/${id}/files`,{files})
+        } catch (err) {
+            console.log("Failed to save files:", err)
+            toast.error("Failed to save files")
+        }
+    },1000),[]
+)
+
+
+useEffect(()=>{
+    return()=>{
+        debouncedSave.cancel();
+    }
+},[debouncedSave])
 
     const updateProjectFiles = useCallback(
-        async (params)=>{
-
-        },[activeProjects, user]
+        async (files)=>{
+            if(!activeProjects || !user) return;
+            debouncedSave(files, activeProjects._id)
+        },[activeProjects, user, debouncedSave]
     )
 
     return (
@@ -230,7 +244,8 @@ export function AppContextProvider({ children }) {
             handleGenerate,
             handleDelete,
             loadProject,
-            logout
+            logout,
+            updateProjectFiles,
         }}>
             {children}
         </AppContext.Provider>

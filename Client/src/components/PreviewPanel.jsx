@@ -1,12 +1,36 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {SandpackProvider, useSandpack} from '@codesandbox/sandpack-react'
 import { detectDependencies } from '../utils/sandpackUtils';
+import { useAppContext } from '../context/AppContext';
 
 //Watches for file edits inside Sandpack editoy and save changes to DB & live state
 function SandpackFileWatcher({onLiveFilesChange}){
   const {sandpack} = useSandpack();
   const {files} = sandpack;
-  const {activeProject, updateProjectFiles} = useAppContext();
+  const {activeProjects, updateProjectFiles} = useAppContext();
+
+  const activeProjectRef = useRef(activeProjects)
+
+  useEffect(()=>{
+    activeProjectRef.current = activeProjects;
+  },[activeProjects])
+  
+  useEffect(()=>{
+   const project = activeProjectRef.current;
+   if(!project) return;
+   const updatedFiles = {};
+   let hasChanges = false;
+
+   for(const [path,files] of Object.entries(files)){
+    const fileCode = fileObj.code;
+    updatedFiles[path] = fileCode;
+   }
+
+
+
+  },[files])
+
+}
 
 const PreviewPanel = ({project,activeFile,showCode}) => {
 
@@ -81,6 +105,6 @@ const PreviewPanel = ({project,activeFile,showCode}) => {
     </div>
   )
 }
-}
+
 
 export default PreviewPanel;
