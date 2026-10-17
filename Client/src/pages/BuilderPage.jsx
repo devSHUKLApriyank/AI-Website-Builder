@@ -6,6 +6,7 @@ import Loading from '../components/Loading';
 import { FolderTreeIcon, MessageSquareIcon } from 'lucide-react';
 import ChatPanel from '../components/ChatPanel';
 import FileExplorer from '../components/FileExplorer';
+import PreviewPanel from '../components/PreviewPanel';
 
 const BuilderPage = () => {
 
@@ -95,7 +96,8 @@ const BuilderPage = () => {
         </div>
         {/*Preview / Code Area */}
         <div className='flex-1 overflow-hidden'>
-          {activeProjects.status === "pending" || activeProjects.status === "generating" || activeProjects.status === "failed" ? (<Loading />) : (<p>PreviewPanel</p>)}
+          {activeProjects.status === "pending" || activeProjects.status === "generating" || activeProjects.status === "failed" ? (
+            <Loading />) : (<PreviewPanel project={activeProjects} activeFiles={activeFile} showCode={showCode}/>)}
         </div>
       </div>
     </div>

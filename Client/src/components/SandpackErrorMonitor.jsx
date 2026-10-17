@@ -14,16 +14,14 @@ const SandpackErrorMonitor = ({onErrorChange}) => {
             msg.includes("net::ERR");
 
             if(isNetworkError){
-                
+                onErrorChange(false);
+                return;
             }
         }
+        onErrorChange(true)
     },[error, onErrorChange])
 
-  return (
-    <div>
-      
-    </div>
-  )
+  return null;
 }
 
 export default SandpackErrorMonitor
