@@ -1,105 +1,132 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import {SandpackProvider, useSandpack} from '@codesandbox/sandpack-react'
+import { SandpackProvider, useSandpack } from '@codesandbox/sandpack-react'
 import { detectDependencies } from '../utils/sandpackUtils';
 import { useAppContext } from '../context/AppContext';
 
 //Watches for file edits inside Sandpack editoy and save changes to DB & live state
-function SandpackFileWatcher({onLiveFilesChange}){
-  const {sandpack} = useSandpack();
-  const {files} = sandpack;
-  const {activeProjects, updateProjectFiles} = useAppContext();
+function SandpackFileWatcher({ onLiveFilesChange }) {
+  const { sandpack } = useSandpack();
+  const { files } = sandpack;
+  const { activeProjects, updateProjectFiles } = useAppContext();
 
   const activeProjectRef = useRef(activeProjects)
 
-  useEffect(()=>{
+  useEffect(() => {
     activeProjectRef.current = activeProjects;
-  },[activeProjects])
-  
-  useEffect(()=>{
-   const project = activeProjectRef.current;
-   if(!project) return;
-   const updatedFiles = {};
-   let hasChanges = false;
+  }, [activeProjects])
 
-   for(const [path,files] of Object.entries(files)){
-    const fileCode = fileObj.code;
-    updatedFiles[path] = fileCode;
-   }
+  useEffect(() => {
+    const project = activeProjectRef.current;
+    if (!project) return;
+    const updatedFiles = {};
+    let hasChanges = false;
 
-
-
-  },[files])
-
-}
-
-const PreviewPanel = ({project,activeFile,showCode}) => {
-
-    const [showErrorOverlay, setShowErrorOverlay] = React.useState(false)
-    const [liveFiles, setLiveFiles] = useState(project.files);
-    const [prevProjectKey, setPrevProjectkey] = useState(`${project._id}-${project.version}`)
-
-    const currentKey = `${project._id}-${project.version}`
-    if(prevProjectKey != currentKey){
-      setPrevProjectkey(currentKey);
-      setLiveFiles(project.files);
+    for (const [path, fileObj] of Object.entries(files)) {
+      const fileCode = fileObj.code;
+      updatedFiles[path] = fileCode;
+      const originalContent = typeof project.files[path] == "string" ? project.files[path] :
+        project.files[path]?.content;
+      if (originalContent !== undefined && originalContent !== fileCode) {
+        hasChanges = true;
+      }
     }
 
-// Convert liveFiles to Sandpack format
-    const sandpackFiles = useMemo(()=>{
-      const spFiles = {};
-      for(const [path, content] of Object.entries(liveFiles)){
-        const fileCode = typeof content === "string" ? content : content?.content || ""; 
-        spFiles[path] = {
-          code: fileCode,
-          active: path === activeFile,
+    //Sync live files to parent
+
+    onLiveFilesChange(updatedFiles);
+    if (hasChanges) {
+      updateProjectFiles(updatedFiles);
+    }
+
+  }, [files])
+  return null;
+}
+
+const PreviewPanel = ({ project, activeFile, showCode }) => {
+
+  const [showErrorOverlay, setShowErrorOverlay] = React.useState(false)
+  const [liveFiles, setLiveFiles] = useState(project.files);
+  const [prevProjectKey, setPrevProjectkey] = useState(`${project._id}-${project.version}`)
+
+  const currentKey = `${project._id}-${project.version}`
+  if (prevProjectKey != currentKey) {
+    setPrevProjectkey(currentKey);
+    setLiveFiles(project.files);
+  }
+
+  const handleLiveFilesChange = (newFiles) => {
+    setLiveFiles((prev) => {
+      let changed = false;
+      for (const [p, code] of Object.entries(newFiles)) {
+        if (prev[p] !== code) {
+          changed = true;
+          break;
         }
       }
-      return spFiles;
-    },[liveFiles, activeFile])
+      return changed ? newFiles : prev;
+    })
+  }
 
-    // detect dependencies from import statements using liveFiles
-    const dependencies = useMemo(()=>{
-      return detectDependencies(liveFiles)
-    }, [liveFiles])
+  // Convert liveFiles to Sandpack format
+  const sandpackFiles = useMemo(() => {
+    const spFiles = {};
+    for (const [path, content] of Object.entries(liveFiles)) {
+      const fileCode = typeof content === "string" ? content : content?.content || "";
+      spFiles[path] = {
+        code: fileCode,
+        active: path === activeFile,
+      }
+    }
+    return spFiles;
+  }, [liveFiles, activeFile])
+
+  // detect dependencies from import statements using liveFiles
+  const dependencies = useMemo(() => {
+    return detectDependencies(liveFiles)
+  }, [liveFiles])
 
   return (
     <div className='h-full w-full'>
       <SandpackProvider key={project._id} template='react'
-       files={sandpackFiles}
-       customSetup={{dependencies}} 
-       options={{
-        externalResources: [
-          "https:cdn.tailwindcss.com",
-          "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        ], 
-        classes:{
-          "sp-wrapper" : "sp-wrapper",
-          "sp-layout" : "sp-layout",
-          "sp-preview" : "sp-preview",
-        },
-        logLevel: 0,
-       }}
-       theme={{
-        colors:{
-          surface1:"#ffffff",
-          surface2:"#f4f4f5",
-          surface3: "#e4e4e7",
-          clickable:"#71717a",
-          base:"#27272a",
-          disabled:"#a1a1aa",
-          hover:"#52525b",
-          accent:"#2563eb",
-          error:"#ef4444",
-          errorSurface:"#fef2f2",
-        },
-        font:{
-          body:"'Urbanist',system-ui, -apple-system, sans-serif",
-          mono:"'Geist Mono', ui-monospace, monospace",
-          size: "14px",
-          lineHeight: "1.6",
-        }
-       }}
-       >
+        files={sandpackFiles}
+        customSetup={{ dependencies }}
+        options={{
+          externalResources: [
+            "https:cdn.tailwindcss.com",
+            "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          ],
+          classes: {
+            "sp-wrapper": "sp-wrapper",
+            "sp-layout": "sp-layout",
+            "sp-preview": "sp-preview",
+          },
+          logLevel: 0,
+        }}
+        theme={{
+          colors: {
+            surface1: "#ffffff",
+            surface2: "#f4f4f5",
+            surface3: "#e4e4e7",
+            clickable: "#71717a",
+            base: "#27272a",
+            disabled: "#a1a1aa",
+            hover: "#52525b",
+            accent: "#2563eb",
+            error: "#ef4444",
+            errorSurface: "#fef2f2",
+          },
+          font: {
+            body: "'Urbanist',system-ui, -apple-system, sans-serif",
+            mono: "'Geist Mono', ui-monospace, monospace",
+            size: "14px",
+            lineHeight: "1.6",
+          }
+        }}
+      >
+
+        <SandpackFileWatcher onLiveFilesChange={handleLiveFilesChange}>
+          <p>SandpackErrorMonitor</p>
+        </SandpackFileWatcher>
 
       </SandpackProvider>
     </div>
