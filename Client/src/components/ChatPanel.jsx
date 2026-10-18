@@ -67,7 +67,7 @@ const ChatPanel = ({ messages, onSend, loading }) => {
 
       {/*Input */}
       <div className='p-3 border-t border-zinc-200'>
-         <PromptInput onSubmit={onSend} loading={loading} placeholder="Ask AI to modify...." autoFocus/>
+         <PromptInput onSubmit={onSend} loading={loading} placeholder="Ask AI to modify...." autofocus/>
       </div>
     </div>
   )
