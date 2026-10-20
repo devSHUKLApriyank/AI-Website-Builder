@@ -16,8 +16,8 @@ export default function AgentProgressDashboard({ project }) {
                             {isFailed
                                 ? "Generation Failed"
                                 : project.status === "pending"
-                                  ? "Planning Architecture..."
-                                  : "AI Agent is Building..."}
+                                    ? "Planning Architecture..."
+                                    : "AI Agent is Building..."}
                         </h2>
                         <p className="text-xs text-zinc-500 mt-0.5">
                             {isFailed ? "An error occurred during build" : "Writing production-ready React codebase"}
@@ -61,13 +61,12 @@ export default function AgentProgressDashboard({ project }) {
                                 return (
                                     <div
                                         key={file.path}
-                                        className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${
-                                            isGenerating
+                                        className={`flex items-center gap-3 p-2.5 rounded-lg border transition-all ${isGenerating
                                                 ? "bg-zinc-50/50 border-zinc-300"
                                                 : isCompleted
-                                                  ? "bg-white border-zinc-100"
-                                                  : "bg-white border-zinc-100 opacity-60"
-                                        }`}
+                                                    ? "bg-white border-zinc-100"
+                                                    : "bg-white border-zinc-100 opacity-60"
+                                            }`}
                                     >
                                         {isCompleted ? (
                                             <CheckCircle2Icon size={16} className="text-emerald-500 shrink-0" />
