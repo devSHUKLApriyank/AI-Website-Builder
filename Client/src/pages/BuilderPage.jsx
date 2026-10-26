@@ -10,6 +10,9 @@ import PreviewPanel from '../components/PreviewPanel';
 import AgentProgressDashboard from '../components/AgentProgressDashboard';
 import PublishModel from '../components/PublishModel';
 import api from '../api/api';
+import toast from 'react-hot-toast';
+import { exportProjectZip } from '../utils/exportProject';
+
 const BuilderPage = () => {
 
   const { id } = useParams()
@@ -45,14 +48,20 @@ const BuilderPage = () => {
     setPublishing(true)
     try {
       await api.post(`/api/projects/${id}/publish`)
-      const url = ``
-    } catch {
-      setPublishing(false)
-    }
+      const url = `${window.location.origin}/publish/${id}`;
+      setPublishUrl(url);
+      toast.success("Website published successfully!")
+    } catch(err){
+      console.error("Publish failed:",err);
+      toast.error(err?.response?.data?.error || "Publish failed")
+      }finally{
+        setPublishing(false)
+      }
   }
 
   const handleDownload = async () => {
-
+    if(!activeProjects)return;
+    exportProjectZip(activeProjects)
   }
 
   if (loadingActiveProjects || !activeProjects) {
