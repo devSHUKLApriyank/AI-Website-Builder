@@ -1,3 +1,5 @@
+import { XIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 import React from 'react'
 
 const PublishModel = ({ publishUrl, onClose }) => {
@@ -7,7 +9,7 @@ const PublishModel = ({ publishUrl, onClose }) => {
     toast.success("Link copied to clipboard")
   }
   return (
-    <div className='absolute insert-0 bg-zinc-950/40 backdrop-blur-xs flex items-center justify-center z-50'>
+    <div className='fixed inset-0 bg-zinc-950/40 backdrop-blur-xs flex items-center justify-center z-50'>
       <div className='bg-white border border-zinc-200 shadow-lg rounded-xl max-w-md w-full p-6 mx-4 relative'>
         <button onClick={onClose} className='absolute top-4 right-4 text-zinc-400 hover:text-zinc-900 cursor-pointer'>
           <XIcon size={16} />
