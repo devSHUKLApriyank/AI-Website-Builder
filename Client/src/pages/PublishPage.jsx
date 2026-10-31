@@ -11,10 +11,32 @@ const PublishPage = () => {
     if (!id) return;
 
     const fetchPublicProject = async () => {
-     const {data} = await api.get(`/api/projects/public/${id}`)
+     try {
+      const {data} = await api.get(`/api/projects/public/${id}`)
       setProject(data)
+     } catch (err) {
+      console.error("failed to load public project:", err);
+      setError(err?.response?.data?.error || "This website is not available or is not published yet.")
+     }finally{
+      setLoading(false)
+     }
     }
+
+    fetchPublicProject();
+
   }, [id])
+
+  if(loading){
+    return <Loading />
+  }
+
+  if(error || !project){
+    return (
+      <div>
+        
+      </div>
+    )
+  }
 
   return (
     <div>
