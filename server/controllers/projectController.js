@@ -1,7 +1,10 @@
 //POST /api/projects
 //Create a new project from an AI prompt
 export async function createProject(req, res){
-
+    const {prompt} = req.body;
+    if(!prompt || typeof prompt != string){
+        res.status(400).json({error:"prompt is required"})
+    }
 }
 
 // Background worker to progressive generate files and update database in real-time.
@@ -41,6 +44,6 @@ export async function publishProject(req, res){
 
 //GET /api/projects/public/:id
 //Get a publicly publihed project details (without auth).
-export async function publishProject(req, res){
+export async function getPublicProject(req, res){
 
 }
